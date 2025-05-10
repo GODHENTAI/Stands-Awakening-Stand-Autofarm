@@ -1,5 +1,9 @@
 # Stands-Awakening-Stand-Autofarm
-loadstring:
-loadstring(game:HttpGet("https://raw.githubusercontent.com/GODHENTAI/Stands-Awakening-Stand-Autofarm/refs/heads/main/script.lua"))()
+basic gui that lets you select cetain stands obtainable from arrows and roll for them until you get one, most of the code is ripped from a pre-existing version but i made it better (faster, roka/arrow, multiselect, stop farm, gui)
 
-most of the code is ripped from a pre-existing version but i made it better (faster, multiselect, gui)
+
+heres the loadstring
+
+`loadstring(game:HttpGet("https://raw.githubusercontent.com/GODHENTAI/Stands-Awakening-Stand-Autofarm/refs/heads/main/script.lua"))()`
+
+
