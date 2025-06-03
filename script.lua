@@ -27,13 +27,40 @@ function equipToolByName(name)
     end
 end
 
--- Stand List (unchanged)
+-- Stand List with display names mapping
 local StandsList = {
-    "Anubis","D4C","OMT","CrazyDiamond","DoppioKingCrimson","KillerQueen","GoldExperience",
-    "StarPlatinum","StarPlatinumTW","TheWorld","HierophantGreen","Whitesnake",
-    "TheWorldAlternateUniverse","WhitesnakeAU","KingCrimsonAU","SoftAndWetShiny",
-    "StarPlatinumOVA","TheWorldOVA","NTWAU","CreeperQueen","SPTW","StickyFingers","SoftAndWet"
+    {gameName = "Anubis", displayName = "Anubis"},
+    {gameName = "D4C", displayName = "Dirty Deeds Done Dirt Cheap"},
+    {gameName = "OMT", displayName = "One More Time"},
+    {gameName = "CrazyDiamond", displayName = "Crazy Diamond"},
+    {gameName = "DoppioKingCrimson", displayName = "Doppio King Crimson"},
+    {gameName = "KillerQueen", displayName = "Killer Queen"},
+    {gameName = "GoldExperience", displayName = "Golden Experience"},
+    {gameName = "StarPlatinum", displayName = "Star Platinum"},
+    {gameName = "StarPlatinumTW", displayName = "Star Platinum: Stone Ocean"},
+    {gameName = "TheWorld", displayName = "The World"},
+    {gameName = "HierophantGreen", displayName = "Hierophant Green"},
+    {gameName = "Whitesnake", displayName = "Whitesnake"},
+    {gameName = "TheWorldAlternateUniverse", displayName = "The World Alternate Universe"},
+    {gameName = "WhitesnakeAU", displayName = "Whitesnake: Alternate Universe"},
+    {gameName = "KingCrimsonAU", displayName = "King Crimson: Alternate Universe"},
+    {gameName = "SoftAndWetShiny", displayName = "Soft And Wet Shiny"},
+    {gameName = "StarPlatinumOVA", displayName = "Star Platinum OVA"},
+    {gameName = "TheWorldOVA", displayName = "The World OVA"},
+    {gameName = "NTWAU", displayName = "Neo The World: Alternate Universe"},
+    {gameName = "CreeperQueen", displayName = "Creeper Queen"},
+    {gameName = "SPTW", displayName = "Star Platinum: The World"},
+    {gameName = "StickyFingers", displayName = "Sticky Fingers"},
+    {gameName = "SoftAndWet", displayName = "Soft And Wet"}
 }
+
+-- Create lookup tables for easy conversion
+local gameNameToDisplay = {}
+local displayNameToGame = {}
+for _, stand in ipairs(StandsList) do
+    gameNameToDisplay[stand.gameName] = stand.displayName
+    displayNameToGame[stand.displayName] = stand.gameName
+end
 
 -- Anti-AFK (unchanged)
 Players.LocalPlayer.Idled:Connect(function()
@@ -79,12 +106,13 @@ Scrolling.CanvasSize = UDim2.new(0, 0, 0, #StandsList * 30)
 Scrolling.ScrollBarThickness = 6
 
 local function toggleStand(stand, btn)
-    local idx = table.find(getgenv().SelectedStands, stand)
+    local gameName = displayNameToGame[stand]
+    local idx = table.find(getgenv().SelectedStands, gameName)
     if idx then
         table.remove(getgenv().SelectedStands, idx)
         btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     else
-        table.insert(getgenv().SelectedStands, stand)
+        table.insert(getgenv().SelectedStands, gameName)
         btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
     end
 end
@@ -97,8 +125,8 @@ for i, stand in ipairs(StandsList) do
     btn.TextColor3 = Color3.new(1,1,1)
     btn.Font = Enum.Font.SourceSans
     btn.TextSize = 18
-    btn.Text = stand
-    btn.MouseButton1Click:Connect(function() toggleStand(stand, btn) end)
+    btn.Text = stand.displayName
+    btn.MouseButton1Click:Connect(function() toggleStand(stand.displayName, btn) end)
 end
 
 local Warn = Instance.new("TextLabel", Frame)
@@ -164,7 +192,14 @@ RunBtn.MouseButton1Click:Connect(function()
         return
     end
     getgenv().Enabled = true
-    Notification("Farm Started", "Targeting: " .. table.concat(getgenv().SelectedStands, ", "))
+    
+    -- Convert game names to display names for notification
+    local displayNames = {}
+    for _, gameName in ipairs(getgenv().SelectedStands) do
+        table.insert(displayNames, gameNameToDisplay[gameName] or gameName)
+    end
+    
+    Notification("Farm Started", "Targeting: " .. table.concat(displayNames, ", "))
     StatusLabel.Text = "Status: Farming..."
 
     coroutine.wrap(function()
@@ -181,9 +216,10 @@ RunBtn.MouseButton1Click:Connect(function()
                 local found = Players.LocalPlayer.Backpack:FindFirstChild(stand, true)
                 local eq = Players.LocalPlayer.Backpack:FindFirstChild("Stand")
                 if found or (eq and eq.Value:lower() == stand:lower()) then
-                    Notification("Acquired", "Got stand: " .. stand)
-                    StatusLabel.Text = "Status: Got " .. stand
-                    CurrentLabel.Text = "Current: " .. stand
+                    local displayName = gameNameToDisplay[stand] or stand
+                    Notification("Acquired", "Got stand: " .. displayName)
+                    StatusLabel.Text = "Status: Got " .. displayName
+                    CurrentLabel.Text = "Current: " .. displayName
                     getgenv().Enabled = false
                     break
                 end
@@ -206,4 +242,3 @@ StopBtn.MouseButton1Click:Connect(function()
     StatusLabel.Text = "Status: Stopped"
     Notification("Farm Stopped", "Stopped by user.")
 end)
-
