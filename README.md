@@ -6,4 +6,6 @@ heres the loadstring
 
 `loadstring(game:HttpGet("https://raw.githubusercontent.com/GODHENTAI/Stands-Awakening-Stand-Autofarm/refs/heads/main/script.lua"))()`
 
+note: stop stealing my fucking script to put in your shitty key guis with all the other dookie ones. MY SCRIPT is on a DIFFERENT LEVEL with those DOG SHIT TELEPORT TO TOOL SCRIPTS and fucking REMOTE SPAMS
+
 
